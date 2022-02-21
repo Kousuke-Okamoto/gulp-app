@@ -73,7 +73,7 @@ const compileSass = (done) => {
         }),//ベンダープレフィックスを自動付与
         cssdeclsort({ order: 'alphabetical' })//css出力時に各スタイル内記述をアルファベット順にする
       ];
-    src(paths.src.scss+files.css, { sourcemaps: true })
+    src(paths.src.scss+files.scss, { sourcemaps: true })
       .pipe(
         plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })//エラーが出た際に通知を出す
       )
@@ -85,6 +85,7 @@ const compileSass = (done) => {
     done();
    };
 
+   //画像コピー
    const copyImages = done => {
      src(["./src/images/**/*"])
        .pipe(dest("./dist/images"))
@@ -135,15 +136,25 @@ const compileSass = (done) => {
     done();
    };
    
+   //リロード
    const browserReload = done => {
     browserSync.reload();
     done();
    };
+
+   //静的ファイルコピー
+   const copyStatic = done => {
+    src(["./src/static/**/*"])
+      .pipe(dest("./dist/"))
+      .on("end", done);
+  };
    
+   //ローカルサーバーでリアルタイムに更新するファイル群
    const watchFiles = () => {
     watch( "./src/ejs/**/*.ejs", series(compileEjs, browserReload))
     watch( './src/scss/**/*.scss', series(compileSass, browserReload))
     watch( "./src/images/**/*", series(copyImages, generateWebp, browserReload))
+    watch( "./src/static/**/*", series(copyStatic, browserReload))
    };
 
 module.exports = {
@@ -151,6 +162,7 @@ module.exports = {
  sass: compileSass,
  imagemin: compileImg,
  webp: generateWebp,
+ static:copyStatic,
  build: series(parallel(compileSass, compileEjs),copyImages),
  default: parallel(buildServer, watchFiles),
 };
