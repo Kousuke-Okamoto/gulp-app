@@ -1,5 +1,6 @@
 // gulpfile.js
-const { src, dest, watch, series, parallel }  = require('gulp');
+const gulp = require('gulp');
+const { src, dest, watch, series, parallel, lastRun }  = require("gulp");
 //src:入力先
 //dest:出力先
 //watch：変更を監視する
@@ -14,6 +15,54 @@ const cssdeclsort = require('css-declaration-sorter');
 const gcmq = require('gulp-group-css-media-queries');
 const mode = require('gulp-mode')();//開発モードとプロダクションモードの使い分けをできるようにする
 const browserSync = require('browser-sync');//ライブリロード用
+const rename = require('gulp-rename');
+const ejs = require('gulp-ejs');
+const replace = require('gulp-replace');
+const fs = require('fs');
+const imageMin = require("gulp-imagemin");
+const mozjpeg = require("imagemin-mozjpeg");
+const pngquant = require("imagemin-pngquant");
+const changed = require("gulp-changed");
+const webp = require("gulp-webp");
+
+//パス設定
+const paths = {
+  'src' : {
+    'html' : './src/',
+    'scss' : './src/scss/',
+    'images': './src/images/',
+    'js'   : './src/js/',
+    'ejs'  : './src/ejs/'
+  },
+  'dist' : {
+    'html' : './dist/',
+    'css' : './dist/css',
+    'images':'./dist/images',
+    'js'   : './dist/js'
+  }
+}
+const files = {
+  'html' : '**/*.html',
+  'ejs'  : '**/*.ejs',
+  'ejs_partial' : '!./src/ejs/**/_*.ejs',
+  'scss' : '**/*.scss',
+  'css'  : '**/*.css',
+  'js'   : '**/*.js',
+  'jsondata' : './src/ejs/data.json'
+}
+
+// EJSコンパイル
+const compileEjs = (done) => {
+  const json = JSON.parse(fs.readFileSync(files.jsondata), 'utf8');
+  gulp.src([paths.src.ejs+files.ejs, files.ejs_partial])
+    .pipe(plumber())
+    .pipe(ejs({data:json}, {}, { ext: '.html' }))
+    .pipe(rename({ extname: '.html' }))
+    .pipe(replace(/^[ \t]*\n/gmi, ''))
+    .pipe(gulp.dest(paths.dist.html));
+  done();
+};
+
 
 const compileSass = (done) => {
     // postcssを纏めて変数に代入
@@ -24,7 +73,7 @@ const compileSass = (done) => {
         }),//ベンダープレフィックスを自動付与
         cssdeclsort({ order: 'alphabetical' })//css出力時に各スタイル内記述をアルファベット順にする
       ];
-    src('./src/scss/**/*.scss', { sourcemaps: true })
+    src(paths.src.scss+files.css, { sourcemaps: true })
       .pipe(
         plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })//エラーが出た際に通知を出す
       )
@@ -32,18 +81,51 @@ const compileSass = (done) => {
       .pipe(postcss(postcssPlugins))
       .pipe(mode.production(gcmq()))
       //npx gulp sass --production (プロダクションモード) でmedia queryの記述をブレイクポイントごとにまとめてくれる
-      .pipe(dest('./dist/css', { sourcemaps: './sourcemaps' }));//ソースマップの指定
+      .pipe(dest(paths.dist.css, { sourcemaps: './sourcemaps' }));//ソースマップの指定
     done();
    };
 
+   const copyImages = done => {
+     src(["./src/images/**/*"])
+       .pipe(dest("./dist/images"))
+       .on("end", done);
+   };
+
+   //画像圧縮
+   const compileImg = (done) => {
+    src(paths.src.images + '**/*')
+    .pipe(changed(paths.dist.images))
+    .pipe(
+      imageMin([
+        pngquant({
+          quality: [0.6, 0.7],
+          speed: 1,
+        }),
+        mozjpeg({ quality: 65 }),
+        imageMin.svgo(),
+        imageMin.optipng(),
+        imageMin.gifsicle({ optimizationLevel: 3 }),
+      ])
+    )
+    .pipe(dest(paths.dist.images));
+    done();
+   };
+
+   //webp作成
+   const generateWebp = done => {
+    src("./dist/imges/**/*.{png,jpg,jpeg}", {since: lastRun(generateWebp)})
+      .pipe(webp())
+      .pipe(dest("dist/imges/webp"));
+    done();
+   };
 
    const buildServer = (done) => {
     browserSync.init({
       port: 3000,//localhost:8080を開く
       files: ["**/*"],//全てのファイルを監視
       // 静的サイト
-      server: { baseDir: './' },//index.htmlがどこにあるか
-      // 動的サイト
+      server: { baseDir: './dist' },//index.htmlがどこにあるか
+      // wordpressなど動的サイト
       // proxy: "http://localsite.local/",
       open: true,　//ブラウザを自動で開く
       watchOptions: {
@@ -59,10 +141,16 @@ const compileSass = (done) => {
    };
    
    const watchFiles = () => {
+    watch( "./src/ejs/**/*.ejs", series(compileEjs, browserReload))
     watch( './src/scss/**/*.scss', series(compileSass, browserReload))
+    watch( "./src/images/**/*", series(copyImages, generateWebp, browserReload))
    };
 
 module.exports = {
+ ejs: compileEjs,
  sass: compileSass,
+ imagemin: compileImg,
+ webp: generateWebp,
+ build: series(parallel(compileSass, compileEjs),copyImages),
  default: parallel(buildServer, watchFiles),
 };
