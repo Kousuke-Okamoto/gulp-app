@@ -10,6 +10,7 @@ const sass = require('gulp-sass')(require('sass'));
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
 const postcss = require('gulp-postcss');
+const purgecss = require("gulp-purgecss");//未使用のスタイルの削除
 const autoprefixer = require('autoprefixer');
 const cssdeclsort = require('css-declaration-sorter');
 const gcmq = require('gulp-group-css-media-queries');
@@ -27,6 +28,7 @@ const webp = require("gulp-webp");
 const webpackStream = require("webpack-stream");
 const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
+var cache = require('gulp-cached');//無限ループ防止
 
 //パス設定
 const paths = {
@@ -86,6 +88,18 @@ const compileSass = (done) => {
       //npx gulp sass --production (プロダクションモード) でmedia queryの記述をブレイクポイントごとにまとめてくれる
       .pipe(dest(paths.dist.css, { sourcemaps: './sourcemaps' }));//ソースマップの指定
     done();
+   };
+
+   const minifyCss = (done) => {
+    src("./dist/css/**/*.css")
+      .pipe(plumber())                              // watch中にエラーが発生してもwatchが止まらないようにする
+      .pipe(purgecss({
+        content: ["./dist/**/*.html","./dist/**/*.js"],  // src()のファイルで使用される可能性のあるファイルを全て指定
+      }))
+      .pipe(dest("./dist/css/"));
+  
+    done();
+
    };
 
    //画像コピー
@@ -179,6 +193,7 @@ module.exports = {
  webp: generateWebp,
  bundle: bundleJs,
  static:copyStatic,
- build: series(parallel(compileSass, compileEjs),copyImages),
+ minify:minifyCss,
+ build: series(compileSass, compileEjs,copyImages,minifyCss),
  default: parallel(buildServer, watchFiles),
 };
