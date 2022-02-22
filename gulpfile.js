@@ -24,6 +24,9 @@ const mozjpeg = require("imagemin-mozjpeg");
 const pngquant = require("imagemin-pngquant");
 const changed = require("gulp-changed");
 const webp = require("gulp-webp");
+const webpackStream = require("webpack-stream");
+const webpack = require("webpack");
+const webpackConfig = require("./webpack.config");
 
 //パス設定
 const paths = {
@@ -63,7 +66,7 @@ const compileEjs = (done) => {
   done();
 };
 
-
+//sassコンパイル
 const compileSass = (done) => {
     // postcssを纏めて変数に代入
     const postcssPlugins = [
@@ -120,6 +123,17 @@ const compileSass = (done) => {
     done();
    };
 
+   const bundleJs = (done) => {
+     webpackStream(webpackConfig, webpack)
+        .on('error', function (e) {
+          console.error(e);
+          this.emit('end');
+      })
+        .pipe(dest(paths.dist.js))
+      done();
+    };
+
+   //ローカルサーバー設定
    const buildServer = (done) => {
     browserSync.init({
       port: 3000,//localhost:8080を開く
@@ -154,6 +168,7 @@ const compileSass = (done) => {
     watch( "./src/ejs/**/*.ejs", series(compileEjs, browserReload))
     watch( './src/scss/**/*.scss', series(compileSass, browserReload))
     watch( "./src/images/**/*", series(copyImages, generateWebp, browserReload))
+    watch( './src/js/**/*.js', series(bundleJs, browserReload))
     watch( "./src/static/**/*", series(copyStatic, browserReload))
    };
 
@@ -162,6 +177,7 @@ module.exports = {
  sass: compileSass,
  imagemin: compileImg,
  webp: generateWebp,
+ bundle: bundleJs,
  static:copyStatic,
  build: series(parallel(compileSass, compileEjs),copyImages),
  default: parallel(buildServer, watchFiles),
