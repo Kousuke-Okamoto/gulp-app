@@ -194,6 +194,6 @@ module.exports = {
  bundle: bundleJs,
  static:copyStatic,
  minify:minifyCss,
- build: series(compileSass, compileEjs,copyImages,minifyCss),
+ build: series(parallel(compileSass,compileEjs),copyImages),
  default: parallel(buildServer, watchFiles),
 };

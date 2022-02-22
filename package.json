@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "npx gulp build && npx gulp",
+    "build": "npx gulp build && npx gulp minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
