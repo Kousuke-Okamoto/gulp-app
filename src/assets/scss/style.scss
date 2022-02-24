@@ -4,6 +4,10 @@
 $red: #f00;
 
 // 変数が使える
+header{
+  font-weight: bold;
+  color: green;
+}
 .hoge {
  color: $red;
 }

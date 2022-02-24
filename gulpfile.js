@@ -34,16 +34,16 @@ var cache = require('gulp-cached');//無限ループ防止
 const paths = {
   'src' : {
     'html' : './src/',
-    'scss' : './src/scss/',
-    'images': './src/images/',
-    'js'   : './src/js/',
+    'scss' : './src/assets/scss/',
+    'images': './src/assets/images/',
+    'js'   : './src/assets/js/',
     'ejs'  : './src/ejs/'
   },
   'dist' : {
     'html' : './dist/',
-    'css' : './dist/css',
-    'images':'./dist/images',
-    'js'   : './dist/js'
+    'css' : './dist/assets/css/',
+    'images':'./dist/assets/images/',
+    'js'   : './dist/assets/js/'
   }
 }
 const files = {
