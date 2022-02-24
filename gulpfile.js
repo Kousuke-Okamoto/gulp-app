@@ -91,12 +91,12 @@ const compileSass = (done) => {
    };
 
    const minifyCss = (done) => {
-    src("./dist/css/**/*.css")
+    src( paths.dist.css + files.css)
       .pipe(plumber())                              // watch中にエラーが発生してもwatchが止まらないようにする
       .pipe(purgecss({
-        content: ["./dist/**/*.html","./dist/**/*.js"],  // src()のファイルで使用される可能性のあるファイルを全て指定
+        content: [files.dist.html + files.html, files.dist.js + files.js],  // src()のファイルで使用される可能性のあるファイルを全て指定
       }))
-      .pipe(dest("./dist/css/"));
+      .pipe(dest(paths.dist.css));
   
     done();
 
@@ -104,8 +104,8 @@ const compileSass = (done) => {
 
    //画像コピー
    const copyImages = done => {
-     src(["./src/images/**/*"])
-       .pipe(dest("./dist/images"))
+     src([paths.src.images + "/**/*"])
+       .pipe(dest(paths.dist.images))
        .on("end", done);
    };
 
@@ -179,10 +179,10 @@ const compileSass = (done) => {
    
    //ローカルサーバーでリアルタイムに更新するファイル群
    const watchFiles = () => {
-    watch( "./src/ejs/**/*.ejs", series(compileEjs, browserReload))
-    watch( './src/scss/**/*.scss', series(compileSass, browserReload))
-    watch( "./src/images/**/*", series(copyImages, generateWebp, browserReload))
-    watch( './src/js/**/*.js', series(bundleJs, browserReload))
+    watch( [paths.src.ejs+files.ejs, files.ejs_partial], series(compileEjs, browserReload))
+    watch( paths.src.scss + files.scss, series(compileSass, browserReload))
+    watch( paths.src.images + "**/*", series(copyImages, generateWebp, browserReload))
+    watch( paths.src.js + files.js, series(bundleJs, browserReload))
     watch( "./src/static/**/*", series(copyStatic, browserReload))
    };
 
@@ -195,5 +195,5 @@ module.exports = {
  static:copyStatic,
  minify:minifyCss,
  build: series(parallel(compileSass,bundleJs,compileEjs),copyImages),
- default: parallel(buildServer, watchFiles),
+ default: series(parallel(compileSass,bundleJs,compileEjs),copyImages,parallel(buildServer, watchFiles)),//npx gulpの内容
 };

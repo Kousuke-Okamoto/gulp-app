@@ -7,7 +7,9 @@ $red: #f00;
 .hoge {
  color: $red;
 }
-
+img{
+  max-width: 100%;
+}
 // アルファベット順に並ぶ
 .alphabetical {
  display: flex;
