@@ -1,8 +1,13 @@
+const path = require('path');
 module.exports = {
-    mode: "production",
-    entry: "./src/js/main.js",
+    mode: 'production',
+    entry: {
+      main: './src/js/main.js',
+      //top: './src/assets/js/top.js',
+    },
     output: {
-      filename: "bundle.js"
+      path: path.resolve(__dirname, 'dist'),
+      filename: '[name].js',
     },
     module: {
        rules: [
@@ -10,10 +15,10 @@ module.exports = {
            test: /\.js$/,
            use: [
              {
-               loader: "babel-loader",
+               loader: 'babel-loader',
                options: {
                  presets: [
-                   "@babel/preset-env",
+                   '@babel/preset-env',
                  ],
                },
              },
@@ -21,5 +26,5 @@ module.exports = {
          },
        ],
      },
-     target: ["web", "es5"],
+     target: ['web', 'es5'],
    }
