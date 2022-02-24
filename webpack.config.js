@@ -1,8 +1,14 @@
+const path = require('path');
+
 module.exports = {
     mode: "production",
-    entry: "./src/assets/js/main.js",
+    entry: {
+      main: "./src/assets/js/main.js",
+      //another: "./src/assets/js/another.js",
+    },
     output: {
-      filename: "bundle.js"
+      path: path.resolve(__dirname, 'dist'),
+      filename: "[name].js",
     },
     module: {
        rules: [

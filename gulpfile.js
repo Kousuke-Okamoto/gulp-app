@@ -1,6 +1,6 @@
 // gulpfile.js
 const gulp = require('gulp');
-const { src, dest, watch, series, parallel, lastRun }  = require("gulp");
+const { src, dest, watch, series, parallel, lastRun }  = require('gulp');
 //src:入力先
 //dest:出力先
 //watch：変更を監視する
@@ -10,7 +10,7 @@ const sass = require('gulp-sass')(require('sass'));
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
 const postcss = require('gulp-postcss');
-const purgecss = require("gulp-purgecss");//未使用のスタイルの削除
+const purgecss = require('gulp-purgecss');//未使用のスタイルの削除
 const autoprefixer = require('autoprefixer');
 const cssdeclsort = require('css-declaration-sorter');
 const gcmq = require('gulp-group-css-media-queries');
@@ -20,14 +20,14 @@ const rename = require('gulp-rename');
 const ejs = require('gulp-ejs');
 const replace = require('gulp-replace');
 const fs = require('fs');
-const imageMin = require("gulp-imagemin");
-const mozjpeg = require("imagemin-mozjpeg");
-const pngquant = require("imagemin-pngquant");
-const changed = require("gulp-changed");
-const webp = require("gulp-webp");
-const webpackStream = require("webpack-stream");
-const webpack = require("webpack");
-const webpackConfig = require("./webpack.config");
+const imageMin = require('gulp-imagemin');
+const mozjpeg = require('imagemin-mozjpeg');
+const pngquant = require('imagemin-pngquant');
+const changed = require('gulp-changed');
+const webp = require('gulp-webp');
+const webpackStream = require('webpack-stream');
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
 var cache = require('gulp-cached');//無限ループ防止
 
 //パス設定
@@ -73,7 +73,7 @@ const compileSass = (done) => {
     // postcssを纏めて変数に代入
     const postcssPlugins = [
         autoprefixer({
-          grid: "autoplace",
+          grid: 'autoplace',
           cascade: false,
         }),//ベンダープレフィックスを自動付与
         cssdeclsort({ order: 'alphabetical' })//css出力時に各スタイル内記述をアルファベット順にする
@@ -104,9 +104,9 @@ const compileSass = (done) => {
 
    //画像コピー
    const copyImages = done => {
-     src([paths.src.images + "/**/*"])
+     src([paths.src.images + '/**/*'])
        .pipe(dest(paths.dist.images))
-       .on("end", done);
+       .on('end', done);
    };
 
    //画像圧縮
@@ -131,9 +131,9 @@ const compileSass = (done) => {
 
    //webp作成
    const generateWebp = done => {
-    src("./dist/imges/**/*.{png,jpg,jpeg}", {since: lastRun(generateWebp)})
+    src( paths.dist.images + '/**/*.{png,jpg,jpeg}', {since: lastRun(generateWebp)})
       .pipe(webp())
-      .pipe(dest("dist/imges/webp"));
+      .pipe(dest( paths.dist.images + '/webp'));
     done();
    };
 
@@ -151,11 +151,11 @@ const compileSass = (done) => {
    const buildServer = (done) => {
     browserSync.init({
       port: 3000,//localhost:8080を開く
-      files: ["**/*"],//全てのファイルを監視
+      files: ['**/*'],//全てのファイルを監視
       // 静的サイト
-      server: { baseDir: './dist' },//index.htmlがどこにあるか
+      server: { baseDir: './dist' },//起点となるindex.htmlがどこにあるか
       // wordpressなど動的サイト
-      // proxy: "http://localsite.local/",
+      // proxy: 'http://localsite.local/',
       open: true,　//ブラウザを自動で開く
       watchOptions: {
         debounceDelay: 1000,//1秒間タスクの連続実行を抑制
@@ -172,18 +172,18 @@ const compileSass = (done) => {
 
    //静的ファイルコピー
    const copyStatic = done => {
-    src(["./src/static/**/*"])
-      .pipe(dest("./dist/"))
-      .on("end", done);
+    src(['./src/static/**/*'])
+      .pipe(dest('./dist/'))
+      .on('end', done);
   };
    
    //ローカルサーバーでリアルタイムに更新するファイル群
    const watchFiles = () => {
     watch( [paths.src.ejs+files.ejs, files.ejs_partial], series(compileEjs, browserReload))
     watch( paths.src.scss + files.scss, series(compileSass, browserReload))
-    watch( paths.src.images + "**/*", series(copyImages, generateWebp, browserReload))
+    watch( paths.src.images + '**/*', series(copyImages, generateWebp, browserReload))
     watch( paths.src.js + files.js, series(bundleJs, browserReload))
-    watch( "./src/static/**/*", series(copyStatic, browserReload))
+    watch( './src/static/**/*', series(copyStatic, browserReload))
    };
 
 module.exports = {
@@ -195,5 +195,6 @@ module.exports = {
  static:copyStatic,
  minify:minifyCss,
  build: series(parallel(compileSass,bundleJs,compileEjs),copyImages),
- default: series(parallel(compileSass,bundleJs,compileEjs),copyImages,parallel(buildServer, watchFiles)),//npx gulpの内容
+ default: series(parallel(compileSass,bundleJs,compileEjs),copyImages,copyStatic),//npx gulpの内容
+ server:series(parallel(buildServer, watchFiles)),
 };
