@@ -1,13 +1,12 @@
 // style.scss
 @charset "utf-8";
+@import './common/base';
+@import './common/layout';
+@import './components/header';
 
 $red: #f00;
 
 // 変数が使える
-header{
-  font-weight: bold;
-  color: green;
-}
 .hoge {
  color: $red;
 }

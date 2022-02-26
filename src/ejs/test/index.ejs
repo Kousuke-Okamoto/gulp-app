@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
- <meta charset="UTF-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title><%= data.title %></title>
 
- <link rel="stylesheet" href="/assets/css/utility.css">
- <link rel="stylesheet" href="/assets/css/style.css">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= data.title %>
+    </title>
+
+    <link rel="stylesheet" href="/assets/css/utility.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<% const path = '../' %>
-<body>
-<!--テスト用-->
-<%- include( path + 'components/_header.ejs') -%>
- <h1 class="hoge">This is Test.</h1>
- <button id="js-alert-button">ボタン</button>
- <img src="/assets/images/test.png">
- <p class="red">red</p>
- <p class="green">green</p>
- <%- include( path + 'components/_footer.ejs') -%>
- <script src="/assets/js/bundle.js"></script>
-</body>
+<% const path='../' %>
+
+    <body>
+        <!--テスト用-->
+        <%- include( path + 'components/_header.ejs' ) -%>
+            <main class="l-main">
+                <h1 class="hoge">TestPage</h1>
+                <button id="js-alert-button">ボタン</button>
+                <p><img src="/assets/images/test.png" width="400"></p>
+                <p class="red">red</p>
+                <p class="green">green</p>
+            </main>
+            <%- include( path + 'components/_footer.ejs' ) -%>
+                <script src="/assets/js/main.js"></script>
+    </body>
+
 </html>

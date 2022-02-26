@@ -1,0 +1,49 @@
+// Base Layout
+$sp: 750; // スマホPSDサイズ
+$tb: 1200; // タブレット - PCサイズ分
+
+// Base Layout
+$min: 320; // スマホ最小幅
+$sp: 750; // スマホPSDサイズ
+$spBP: 767; // スマホ - タブレットサイズ分
+$tb: 1200; // タブレット - PCサイズ分
+
+// Base Fontsize
+$Fz_root: 10; // html {font-size: 62.5%} を想定
+$Fz_sp: 15; // スマホ本文サイズ
+$Fz_tb: 14; // タブレット本文サイズ
+$Fz_pc: 14; // PC本文サイズ
+
+@mixin pc {
+	@media screen and (min-width: 768px) {
+		@content;
+	}
+}
+
+@mixin pc-sp {
+	@media screen and (max-width: 1260px) {
+		@content;
+	}
+}
+
+@mixin sp {
+	@media screen and (max-width: 767px) {
+		@content;
+	}
+}
+
+//------------------------------------------------
+//@function
+//------------------------------------------------*/
+//remで計算したいとき
+// PC表示時のrem計算（16pxをベース） */
+@function rem($size, $basesize: 16) {
+	@return $size / $basesize * 1rem;
+}
+//vwで計算したいとき
+// 640pxデザイン時のpxからvwを計算 */
+@function vws($size, $viewport: 750) {
+	$rate: 100 / $viewport;
+
+	@return $size / $viewport * 100 * 1vw;
+}
