@@ -1,5 +1,8 @@
 // style.scss
 @charset "utf-8";
+@import './common/base';
+@import './common/layout';
+@import './components/header';
 
 $red: #f00;
 

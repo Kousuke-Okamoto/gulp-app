@@ -28,21 +28,25 @@ const webp = require('gulp-webp');
 const webpackStream = require('webpack-stream');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config');
+<<<<<<< HEAD
+=======
+var cache = require('gulp-cached');//無限ループ防止
+>>>>>>> main
 
 //パス設定
 const paths = {
   'src' : {
     'html' : './src/',
-    'scss' : './src/scss/',
-    'images': './src/images/',
-    'js'   : './src/js/',
+    'scss' : './src/assets/scss/',
+    'images': './src/assets/images/',
+    'js'   : './src/assets/js/',
     'ejs'  : './src/ejs/'
   },
   'dist' : {
     'html' : './dist/',
-    'css' : './dist/css',
-    'images':'./dist/images',
-    'js'   : './dist/js'
+    'css' : './dist/assets/css/',
+    'images':'./dist/assets/images/',
+    'js'   : './dist/assets/js/'
   }
 }
 const files = {
@@ -152,7 +156,7 @@ const compileSass = (done) => {
       port: 3000,//localhost:8080を開く
       files: ['**/*'],//全てのファイルを監視
       // 静的サイト
-      server: { baseDir: './dist' },//index.htmlがどこにあるか
+      server: { baseDir: './dist' },//起点となるindex.htmlがどこにあるか
       // wordpressなど動的サイト
       // proxy: 'http://localsite.local/',
       open: true,　//ブラウザを自動で開く
@@ -193,7 +197,11 @@ module.exports = {
  bundle: bundleJs,
  static:copyStatic,
  minify:minifyCss,
+<<<<<<< HEAD
  build: series(parallel(compileSass,bundleJs,compileEjs),copyImages,copyStatic),
+=======
+ build: series(parallel(compileSass,bundleJs,compileEjs),copyImages),
+>>>>>>> main
  default: series(parallel(compileSass,bundleJs,compileEjs),copyImages,copyStatic),//npx gulpの内容
  server:series(parallel(buildServer, watchFiles)),
 };
