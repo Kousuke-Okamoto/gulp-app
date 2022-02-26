@@ -28,10 +28,6 @@ const webp = require('gulp-webp');
 const webpackStream = require('webpack-stream');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config');
-<<<<<<< HEAD
-=======
-var cache = require('gulp-cached');//無限ループ防止
->>>>>>> main
 
 //パス設定
 const paths = {
@@ -197,11 +193,7 @@ module.exports = {
  bundle: bundleJs,
  static:copyStatic,
  minify:minifyCss,
-<<<<<<< HEAD
  build: series(parallel(compileSass,bundleJs,compileEjs),copyImages,copyStatic),
-=======
- build: series(parallel(compileSass,bundleJs,compileEjs),copyImages),
->>>>>>> main
  default: series(parallel(compileSass,bundleJs,compileEjs),copyImages,copyStatic),//npx gulpの内容
  server:series(parallel(buildServer, watchFiles)),
 };
