@@ -93,7 +93,7 @@ const compileSass = (done) => {
     src( paths.dist.css + files.css)
       .pipe(plumber())                              // watch中にエラーが発生してもwatchが止まらないようにする
       .pipe(purgecss({
-        content: [files.dist.html + files.html, files.dist.js + files.js],  // src()のファイルで使用される可能性のあるファイルを全て指定
+        content: [paths.dist.html + files.html, paths.dist.js + files.js],  // src()のファイルで使用される可能性のあるファイルを全て指定
       }))
       .pipe(dest(paths.dist.css));
   
@@ -153,7 +153,7 @@ const compileSass = (done) => {
       files: ['**/*'],//全てのファイルを監視
       // 静的サイト
       server: { baseDir: './dist' },//起点となるindex.htmlがどこにあるか
-      // wordpressなど動的サイト
+      // wordpressなど動的サイト↓
       // proxy: 'http://localsite.local/',
       open: true,　//ブラウザを自動で開く
       watchOptions: {
