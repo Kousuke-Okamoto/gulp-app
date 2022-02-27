@@ -3,16 +3,28 @@
 @import './common/base';
 @import './common/layout';
 @import './components/header';
+@import './components/footer';
 
 $red: #f00;
 
-// 変数が使える
-.hoge {
- color: $red;
+
+.p-document{
+  &_heading{
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+  }
 }
 img{
   max-width: 100%;
 }
+#js-alert-button{
+  border: solid 2px #000;
+  padding: 10px;
+}
+//--参考用記述-----------
+//各コンパイル後のcss参照のこと-----
+
 // アルファベット順に並ぶ
 .alphabetical {
  display: flex;
@@ -31,32 +43,4 @@ img{
  grid-template-rows: 100px 50px;
  grid-template-columns: 150px 1fr;
 }
-
-.media-query-sample01 {
-    font-size: 14px;
-    @media only screen and (min-width: 768px) {
-      font-size: 18px;
-    }
-   }
-   
-   .media-query-sample02 {
-    color: blue;
-    @media only screen and (min-width: 768px) {
-      color: green;
-    }
-   }
-
-
-.media-query-sample03 {
-    font-size: 14px;
-    @media only screen and (min-width: 1068px) {
-      font-size: 18px;
-    }
-   }
-   
-   .media-query-sample04 {
-    color: blue;
-    @media only screen and (min-width: 1068px) {
-      color: green;
-    }
-   }
+//-----------------------------

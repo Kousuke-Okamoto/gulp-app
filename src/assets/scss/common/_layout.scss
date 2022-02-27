@@ -1,3 +1,18 @@
+@use './mixin' as m;
+
 .l-main{
     padding-top: 112px;
+}
+.l-sec{
+    padding: 0 30px;
+    @include m.sp{
+        padding: 0;
+    }
+}
+.l-inner{
+    width: 960px;
+    margin: 0 auto;
+    @include m.sp{
+        width: 92%;
+    }
 }

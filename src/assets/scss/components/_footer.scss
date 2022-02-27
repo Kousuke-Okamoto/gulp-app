@@ -1,0 +1,77 @@
+@use "../common/mixin" as m;
+
+.l-footer {
+  position: relative;
+  padding: 50px 20px 60px;
+  background-color: #fcc800;
+  border-top: #000 solid 2px;
+  &-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  &-menu {
+    display: flex;
+    li {
+      width: calc(100% / 3);
+      text-align: center;
+      border-left: 1px solid #000;
+      &:last-child {
+        border-right: 1px solid #000;
+      }
+      a {
+        color: #000;
+        font-weight: bold;
+        font-size: 16px;
+        transition: all 0.3s;
+        display: block;
+        &:hover {
+          color: #ea553a;
+        }
+      }
+    }
+  }
+  &-copyright {
+    display: block;
+    color: #000;
+    text-align: center;
+    margin-top: 30px;
+  }
+}
+
+.p-follow {
+  position: fixed;
+  bottom: 15%;
+  right: 50px;
+  z-index: 888;
+  &-btn {
+    display: block;
+    z-index: 9999;
+    padding: auto;
+    border-radius: 40px;
+    width: 65px;
+    height: 65px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    position: relative;
+  }
+  &-icon{
+    content: "";
+    display: block;
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: 28px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 16px;
+    height: 16px;
+    border-top: 1.5px solid #fff;
+    border-right: 1.5px solid #fff;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+  }
+}

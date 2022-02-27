@@ -17,15 +17,21 @@
     <body>
         <!--テスト用-->
         <%- include( path + 'components/_header.ejs' ) -%>
+            <a id="top"></a>
             <main class="l-main">
-                <h1 class="hoge">This is Test.</h1>
-                <button id="js-alert-button">ボタン</button>
-                <p><img src="/assets/images/test.png" width="400"></p>
-                <p class="red">red</p>
-                <p class="green">green</p>
+                <div class="l-sec p-document">
+                    <div class="l-inner pt70 pb120">
+                        <h1 class="p-document_heading">参考用のサンプルページです</h1>
+                        <p class="mt40">制作の際は不要なページやパーツは削除してください。<br>
+                        またはmasterブランチの方がシンプルな構成となっていますのでそちらを使用してください。</p>
+                        <p class="mt100">このサンプルページは工事中です。<br>今後cssコンポーネントやjsのサンプルなどを増やしていく予定です。</p>
+                        <button id="js-alert-button" class="mt100">jsテストボタン</button>
+                        <p class="mt120"><img src="/assets/images/test.png" width="400"></p>
+                    </div>
+                </div>
             </main>
             <%- include( path + 'components/_footer.ejs' ) -%>
-                <script src="/assets/js/main.js"></script>
+            <script src="/assets/js/main.js"></script>
     </body>
 
 </html>

@@ -1,15 +1,91 @@
+@charset "utf-8";
+@use "./common/mixin" as m;
+//ユーティリティクラス用のcssです
+//--※--//
+//納品前にnpm run build(npx gulp minify)のコマンドを行えば、
+//css内にある未使用のスタイルを全て削除し、整理できます
 
-   @charset "utf-8";
-   .red{
-    color: red;
+.pc {
+  //pcのみ表示
+  @include m.sp {
+    display: none;
   }
-  .blue{
-    color: blue;
+}
+.sp {
+  //spのみ表示
+  @include m.pc {
+    display: none;
   }
-  .green{
-    color: green;
-  }
+}
 
-  .fs-16{
-      font-size: 16px;
+.u-bold {
+  font-weight: 700!important;
+}
+//--font-size-------------------------------
+@for $fs from 10 through 24 {
+  .fs#{$fs * 1} {
+    font-size: #{$fs * 1}px!important;
   }
+}
+@include m.sp {
+  @for $fssp from 10 through 24 {
+    ._sp_fs#{$fssp * 1} {
+      font-size: #{$fssp * 1}px!important;
+    }
+  }
+}
+//--margin----------------------------------
+@for $mt from 0 through 24 {
+  .mt#{$mt * 5} {
+    margin-top: #{$mt * 5}px!important;
+  }
+}
+//5の倍数で24回処理を繰り返す(値120まで繰り返す)
+
+@include m.sp {
+  @for $mtsp from 0 through 24 {
+    ._sp_mt#{$mtsp * 5} {
+      margin-top: #{$mtsp * 5}px!important;
+    }
+  } 
+}
+
+@for $mb from 0 through 24 {
+  .mb#{$mb * 5} {
+    margin-bottom: #{$mb * 5}px!important;
+  }
+}
+
+@include m.sp {
+  @for $mbsp from 0 through 24 {
+    ._sp_mb#{$mbsp * 5} {
+      margin-bottom: #{$mbsp * 5}px!important;
+    }
+  }
+}
+//--padding-----------------------------------
+
+@for $pt from 0 through 24 {
+  .pt#{$pt * 5} {
+    padding-top: #{$pt * 5}px!important;
+  }
+}
+@include m.sp {
+  @for $ptsp from 0 through 24 {
+    ._sp_pt#{$ptsp * 5} {
+      padding-top: #{$ptsp * 5}px!important;
+    }
+  }
+}
+@for $pb from 0 through 24 {
+  .pb#{$pb * 5} {
+    padding-bottom: #{$pb * 5}px!important;
+  }
+}
+@include m.sp {
+  @for $pbsp from 0 through 24 {
+    ._sp_pb#{$pbsp * 5} {
+      padding-bottom: #{$pbsp * 5}px!important;
+    }
+  }
+}
